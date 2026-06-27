@@ -496,83 +496,28 @@
     return `mailto:${to}?subject=${subject}&body=${body}`;
   }
 
-  /* ── Audio Engine (Web Audio API) ── */
-  const AC = window.AudioContext || window.webkitAudioContext;
-  let ac = null;
-  let musicLoop = null;
-  let musicGain = null;
+  /* ── Background Music (MP3) ── */
+  const bgMusic = new Audio('happybirthday.mp3');
+  bgMusic.loop   = true;
+  bgMusic.volume = 0.55;
+
   let audioStarted = false;
-
-  function getAC() {
-    if (!ac) ac = new AC();
-    return ac;
-  }
-
-  /* Happy Birthday melody: note, duration (beats), rest-after */
-  const BPM = 116;
-  const BEAT = 60 / BPM;
-  const MELODY = [
-    /* "Hap-py birth-day to you" */
-    [392,0.75],[392,0.25],[440,1],[392,1],[523,1],[494,2],
-    /* "Hap-py birth-day to you" */
-    [392,0.75],[392,0.25],[440,1],[392,1],[587,1],[523,2],
-    /* "Hap-py birth-day dear Frey-a" */
-    [392,0.75],[392,0.25],[784,1],[659,1],[523,1],[494,1],[440,1],
-    /* "Hap-py birth-day to you" */
-    [698,0.75],[698,0.25],[659,1],[523,1],[587,1],[523,2],
-  ];
-
-  function playMelodyOnce(ctx, gainNode, startTime) {
-    let t = startTime;
-    MELODY.forEach(([freq, beats]) => {
-      const osc  = ctx.createOscillator();
-      const env  = ctx.createGain();
-      osc.connect(env);
-      env.connect(gainNode);
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, t);
-      const dur = beats * BEAT;
-      env.gain.setValueAtTime(0, t);
-      env.gain.linearRampToValueAtTime(0.55, t + 0.02);
-      env.gain.linearRampToValueAtTime(0.35, t + dur * 0.6);
-      env.gain.linearRampToValueAtTime(0, t + dur * 0.95);
-      osc.start(t);
-      osc.stop(t + dur);
-      t += dur;
-    });
-    return t; /* returns when melody ends */
-  }
 
   function startMusic() {
     if (audioStarted) return;
     audioStarted = true;
-    const ctx = getAC();
-    musicGain = ctx.createGain();
-    /* Reverb-lite: convolver with short impulse */
-    musicGain.gain.setValueAtTime(0, ctx.currentTime);
-    musicGain.gain.linearRampToValueAtTime(0.45, ctx.currentTime + 1.5);
-    musicGain.connect(ctx.destination);
-
-    let loopStart = ctx.currentTime + 0.3;
-    function scheduleLoop() {
-      const end = playMelodyOnce(ctx, musicGain, loopStart);
-      const gap = 1.2; /* seconds between repeats */
-      loopStart = end + gap;
-      musicLoop = setTimeout(scheduleLoop, (end - ctx.currentTime + gap - 0.3) * 1000);
-    }
-    scheduleLoop();
+    bgMusic.play().catch(() => {});
   }
 
   function stopMusic() {
-    clearTimeout(musicLoop);
-    if (musicGain) {
-      const ctx = getAC();
-      musicGain.gain.cancelScheduledValues(ctx.currentTime);
-      musicGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
-    }
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    audioStarted = false;
   }
 
-  /* Unwrap sound effect: whoosh + sparkle pop */
+  /* ── Unwrap Sound Effect (Web Audio API) ── */
+
+  /* Unwrap sound: whoosh + sparkle pop */
   function playUnwrapSound() {
     const ctx = getAC();
     const now = ctx.currentTime;
@@ -686,14 +631,8 @@
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(); }
   });
 
-  /* Restore state if already opened this session */
-  if (sessionStorage.getItem(STORAGE_KEY)) {
-    gift.classList.add('opened');
-    hint.style.display = 'none';
-    voucher.classList.add('visible');
-    btnRedeem.classList.add('visible');
-    btnRedeem.href = buildMailto();
-  }
+  /* Always start fresh — gift can be re-opened each visit */
+  sessionStorage.removeItem(STORAGE_KEY);
 </script>
 </body>
 </html>
