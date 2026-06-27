@@ -516,6 +516,9 @@
   }
 
   /* ── Unwrap Sound Effect (Web Audio API) ── */
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let _ac = null;
+  function getAC() { if (!_ac) _ac = new AC(); return _ac; }
 
   /* Unwrap sound: whoosh + sparkle pop */
   function playUnwrapSound() {
