@@ -288,6 +288,35 @@
       z-index: 100;
     }
 
+    /* ─── Sponsor ─── */
+    .sponsor {
+      position: relative;
+      z-index: 1;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      opacity: 0.55;
+      transition: opacity 0.2s;
+    }
+    .sponsor:hover { opacity: 0.9; }
+    .sponsor-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #7a6da0;
+    }
+    .sponsor-brand {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #c4b8e8;
+      text-decoration: none;
+    }
+    .sponsor-brand:hover { color: var(--white); }
+    .sponsor-accent { color: var(--gold); }
+
     /* ─── Footer ─── */
     .footer {
       position: relative;
@@ -341,6 +370,11 @@
 </div>
 
 <p class="footer">Made with ❤️ by Jerome</p>
+
+<div class="sponsor">
+  <span class="sponsor-label">Sponsored by</span>
+  <a class="sponsor-brand" href="https://ax.media" target="_blank" rel="noopener">ax<span class="sponsor-accent">media</span></a>
+</div>
 
 <script>
   /* ── Stars ── */
