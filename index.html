@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alles Gute zum Geburtstag, Freya! 🎂</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0a1e;
+      --surface:  #1a1535;
+      --violet:   #6c3fc5;
+      --violet2:  #9b5de5;
+      --gold:     #f4c542;
+      --gold2:    #ffe082;
+      --text:     #f0eaff;
+      --muted:    #a89ecf;
+      --white:    #ffffff;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      background:
+        radial-gradient(ellipse at 20% 20%, #2a1060 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, #1a0a4e 0%, transparent 50%),
+        var(--bg);
+    }
+
+    /* ─── Stars ─── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--white);
+      animation: twinkle var(--d) ease-in-out infinite alternate;
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      from { opacity: 0; transform: scale(0.8); }
+      to   { opacity: var(--o); transform: scale(1.2); }
+    }
+
+    /* ─── Main card ─── */
+    .card {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .headline {
+      font-size: clamp(1.6rem, 6vw, 2.6rem);
+      font-weight: bold;
+      line-height: 1.25;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(244,197,66,0.5);
+      letter-spacing: 0.01em;
+    }
+
+    .subtext {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ─── Gift box ─── */
+    .gift-wrap {
+      cursor: pointer;
+      /* padding-top reserves space for lid + bow above the box */
+      padding-top: 70px;
+      position: relative;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .gift-wrap:not(.opened):hover .gift-box { animation: wobble 0.5s ease-in-out infinite; }
+    .gift-wrap:not(.opened):hover .gift-box { animation: pulse 0.8s ease-in-out infinite; }
+
+    @keyframes wobble {
+      0%,100% { transform: rotate(0deg); }
+      25%      { transform: rotate(-4deg); }
+      75%      { transform: rotate(4deg); }
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.05); }
+    }
+
+    /* Box body */
+    .gift-box {
+      position: relative;
+      width: 140px;
+      height: 120px;
+      background: var(--violet);
+      border-radius: 6px 6px 10px 10px;
+      box-shadow: 0 8px 30px rgba(108,63,197,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: transform 0.3s ease;
+    }
+    /* ribbon vertical */
+    .gift-box::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0; bottom: 0;
+      width: 22px;
+      background: var(--gold);
+      border-radius: 4px;
+    }
+
+    /* Lid */
+    .gift-lid {
+      position: absolute;
+      bottom: 100%;
+      left: -8px; right: -8px;
+      height: 36px;
+      background: var(--violet2);
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 -4px 12px rgba(108,63,197,0.4);
+      transform-origin: bottom center;
+      transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    /* ribbon horizontal on lid */
+    .gift-lid::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0; right: 0;
+      height: 22px;
+      background: var(--gold);
+      border-radius: 4px;
+    }
+    /* bow left */
+    .gift-lid::after {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 26px;
+      background: var(--gold2);
+      border-radius: 50% 0 0 50% / 50% 0 0 50%;
+      box-shadow: 28px 0 0 0 var(--gold2);
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    /* Bow knot */
+    .bow-knot {
+      position: absolute;
+      bottom: calc(100% + 22px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      background: var(--gold);
+      border-radius: 50%;
+      z-index: 2;
+      box-shadow: 0 0 8px rgba(244,197,66,0.6);
+    }
+
+    .gift-wrap.opened .gift-lid {
+      transform: rotate(-110deg) translateX(-20px);
+    }
+
+    .open-hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      animation: hint-pulse 2s ease-in-out infinite;
+    }
+    .gift-wrap.opened + .open-hint { display: none; }
+
+    @keyframes hint-pulse {
+      0%,100% { opacity: 0.6; }
+      50%      { opacity: 1; }
+    }
+
+    /* ─── Voucher card ─── */
+    .voucher {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(135deg, #1e1545 0%, #2d1f6e 100%);
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 2rem 2rem 1.75rem;
+      box-shadow:
+        0 0 0 1px rgba(244,197,66,0.15),
+        0 20px 60px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      max-width: 380px;
+      width: 100%;
+      animation: reveal 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    .voucher.visible { display: flex; }
+
+    @keyframes reveal {
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .voucher-icon { font-size: 2.5rem; line-height: 1; }
+
+    .voucher-title {
+      font-size: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+
+    .voucher-body {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--white);
+      line-height: 1.4;
+    }
+
+    .voucher-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .divider {
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0.25rem 0;
+    }
+
+    /* ─── Redeem button ─── */
+    .btn-redeem {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--gold) 0%, #e6a800 100%);
+      color: #1a0e00;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      padding: 0.85rem 2rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 20px rgba(244,197,66,0.4);
+    }
+    .btn-redeem.visible { display: flex; }
+    .btn-redeem:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 30px rgba(244,197,66,0.6);
+    }
+    .btn-redeem:active { transform: scale(0.97); }
+
+    /* ─── Confetti ─── */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      color: #5a4d7a;
+    }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 480px) {
+      body { padding: 1.5rem 1rem; }
+      .card { gap: 1.25rem; }
+      .voucher { padding: 1.5rem 1.25rem; }
+      .voucher-body { font-size: 1.1rem; }
+      .btn-redeem { font-size: 0.95rem; padding: 0.8rem 1.5rem; }
+      .gift-box { width: 120px; height: 100px; }
+      .gift-wrap { padding-top: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<div class="card">
+  <h1 class="headline">Alles Gute zum Geburtstag, Freya! 🎂</h1>
+
+  <div class="gift-wrap" id="gift" role="button" aria-label="Geschenk öffnen" tabindex="0">
+    <div class="gift-box">
+      <div class="gift-lid"></div>
+      <div class="bow-knot"></div>
+    </div>
+  </div>
+  <p class="open-hint" id="hint">👆 Klicke auf das Geschenk</p>
+  <p class="subtext">Von Jerome</p>
+
+  <div class="voucher" id="voucher">
+    <div class="voucher-icon">🎁</div>
+    <div class="voucher-title">Gutschein</div>
+    <div class="divider"></div>
+    <div class="voucher-body">1 Stunde IT-Einrichtungssupport<br>bei dir Zuhause</div>
+    <div class="divider"></div>
+    <div class="voucher-sub">Persönlich von Jerome —<br>wann immer du ihn brauchst.</div>
+  </div>
+
+  <a class="btn-redeem" id="btn-redeem" href="#" role="button">
+    Jetzt einlösen 📅
+  </a>
+</div>
+
+<p class="footer">Made with ❤️ by Jerome</p>
+
+<script>
+  /* ── Stars ── */
+  (function () {
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = [
+        `width:${size}px`, `height:${size}px`,
+        `left:${Math.random() * 100}%`, `top:${Math.random() * 100}%`,
+        `--d:${(Math.random() * 3 + 1.5).toFixed(1)}s`,
+        `--o:${(Math.random() * 0.6 + 0.2).toFixed(2)}`,
+        `animation-delay:${(Math.random() * 4).toFixed(1)}s`
+      ].join(';');
+      container.appendChild(s);
+    }
+  })();
+
+  /* ── Confetti ── */
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let animId = null;
+
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const COLORS = ['#f4c542','#ffe082','#9b5de5','#6c3fc5','#ffffff','#ff8fab','#80ffdb'];
+
+  function spawnConfetti() {
+    for (let i = 0; i < 160; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -10 - Math.random() * 200,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 6 + 3,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.2,
+        vx: (Math.random() - 0.5) * 3,
+        vy: Math.random() * 4 + 2,
+        life: 1,
+        decay: Math.random() * 0.008 + 0.003
+      });
+    }
+  }
+
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.life > 0);
+    for (const p of particles) {
+      ctx.save();
+      ctx.globalAlpha = p.life;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      p.vy += 0.05; /* gravity */
+      p.life -= p.decay;
+    }
+    if (particles.length > 0) {
+      animId = requestAnimationFrame(drawConfetti);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  function fireConfetti() {
+    if (animId) cancelAnimationFrame(animId);
+    spawnConfetti();
+    setTimeout(spawnConfetti, 400);
+    animId = requestAnimationFrame(drawConfetti);
+  }
+
+  /* ── mailto builder ── */
+  function buildMailto() {
+    const to      = 'freyageburtstag@jerome.wtf';
+    const subject = encodeURIComponent('Gutschein einlösen – IT-Support');
+    const body    = encodeURIComponent(
+      'Hallo Jerome,\n' +
+      'ich möchte meinen Gutschein einlösen.\n\n' +
+      'Gewünschtes Datum: [hier eintragen]\n' +
+      'Thema / Was soll eingerichtet werden: [hier beschreiben]\n\n' +
+      'Liebe Grüße,\n' +
+      'Freya'
+    );
+    return `mailto:${to}?subject=${subject}&body=${body}`;
+  }
+
+  /* ── Gift interaction ── */
+  const gift    = document.getElementById('gift');
+  const voucher = document.getElementById('voucher');
+  const hint    = document.getElementById('hint');
+  const btnRedeem = document.getElementById('btn-redeem');
+
+  const STORAGE_KEY = 'freya_gift_opened';
+
+  function openGift() {
+    if (gift.classList.contains('opened')) return;
+    gift.classList.add('opened');
+    sessionStorage.setItem(STORAGE_KEY, '1');
+    hint.style.display = 'none';
+
+    fireConfetti();
+
+    setTimeout(() => {
+      voucher.classList.add('visible');
+      btnRedeem.classList.add('visible');
+      btnRedeem.href = buildMailto();
+    }, 700);
+  }
+
+  gift.addEventListener('click', openGift);
+  gift.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(); }
+  });
+
+  /* Restore state if already opened this session */
+  if (sessionStorage.getItem(STORAGE_KEY)) {
+    gift.classList.add('opened');
+    hint.style.display = 'none';
+    voucher.classList.add('visible');
+    btnRedeem.classList.add('visible');
+    btnRedeem.href = buildMailto();
+  }
+</script>
+</body>
+</html>
